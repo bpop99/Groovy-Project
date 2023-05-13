@@ -15,7 +15,7 @@ class Article {
         this.score = score
     }
 
-    public String toString(){
+    def String toString(){
         String out
         if (this.date.equals("Null")){
             out = """

@@ -2,9 +2,9 @@
 import jodd.jerry.Jerry
 @Grab('org.jodd:jodd-http:6.2.1')
 import jodd.http.HttpRequest
-class Scraper {
 
-    public Stories scrape(){
+class Scraper {
+    def Stories scrape(){
         def title           //Article title
         def site            //Article site host name
         def url             //Article url
@@ -21,11 +21,10 @@ class Scraper {
         def response  = HttpRequest.get(link).send()
         def doc = Jerry.of(response.bodyText())
         def data = doc.find('table')
-
         //Get the row entries with article data
         def titleData = data.find('table tr.athing')
         def subData = doc.find('table td.subtext')
-
+        //Received and desired date/time formats
         def form = "yyyy-MM-dd'T'hh:mm:ss"
         def newForm = "MM-dd-yyyy"
         //Closure
@@ -48,28 +47,24 @@ class Scraper {
                 user = scoreParent.find('a.hnuser').text()
                 posted = scoreParent.find('span.age').attr('title')
             }
-            
             //Convert the date into a new form
             if (posted != null){
                 date = Date.parse(form, posted).format(newForm)
             } else {
                 date = "Null"
             }
-
             //Convert id to Integer
             if (!idNum.equals("")){
                 idNum = idNum.toInteger()
             } else {
                 idNum = 0
             }
-
             //Convert score to Integer
             if (!score.equals("")){
                 score = score.toInteger()
             } else {
                 score = 0
             }
-
             //Make article and add to Stories object
             Article art = new Article(title, user, url, date, idNum, score)
             myStories.addStory(title, art.toString())
